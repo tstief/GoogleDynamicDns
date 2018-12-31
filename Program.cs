@@ -22,14 +22,9 @@ namespace GoogleDynamicDns
         private static void SendMessage(string message)
         {
             Console.WriteLine(message);
-            try
-            {
-                mailClient.SendMessageAsync("tstief@gmail.com", "Google DDNS Update", message);
-            }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine("Esception caugh during call to MailGun: {0}", e.Message);
-            }
+            mailClient.SendMessageAsync("tstief@gmail.com", "Google DDNS Update", message).ContinueWith(t => Console.WriteLine("Exception caught during call to MailGun: {0}", t.Exception.Message),
+                                                                                                        TaskContinuationOptions.OnlyOnFaulted);
+
         }
 
         private static async Task<string> GetIpAddressAsync()
